@@ -1,6 +1,6 @@
 import time
 import threading
-import VL53L0X.python.VL53L0X as VL53L0X
+import VL53L0X as VL53L0X
 from appLogging import get_module_logger
 
 module_logger = get_module_logger("tof")
