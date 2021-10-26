@@ -10,7 +10,7 @@ class TOF(object):
     def __init__(self):
         self._running = False
         self._ranging = False
-        self._range = 10
+        self._range = 0
         self._delay = 60
 
     def get_range(self):
@@ -57,7 +57,7 @@ class TOF(object):
         if not self._running:
             module_logger.debug("start()")
             self._running = True
-            timer = threading.Timer(15, self.get_range)
+            timer = threading.Timer(0, self.get_range)
             timer.start()
 
     def stop(self):
