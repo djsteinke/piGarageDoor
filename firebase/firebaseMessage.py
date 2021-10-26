@@ -4,6 +4,7 @@ from appLogging import get_module_logger
 from firebase_admin import messaging
 import firebase_admin
 from firebase_admin import credentials
+from static import p_dir
 
 module_logger = get_module_logger('firebaseMessage')
 
@@ -14,7 +15,7 @@ class FirebaseMessage(object):
 
     def send(self):
         client = "fNmiZCeNS4CP_ds1Q4C1uo:APA91bEAIdE5SUAmI6MTpYAkKwtX0vRjmXu2tavv3wRRxgGjIaByPRCVWm-9rYdxsK8-IrYGoRmVDVe3LqBxcxX3oghZ_k1mZ7cfBGdsGZvbnP9UqRhV7aq8SfBb8BXiFderCULhFi2x"
-        key_file = os.getcwd() + "\\firebase\\firebaseKey.json"
+        key_file = p_dir + "\\firebaseKey.json"
         cred = credentials.Certificate(key_file)
         firebase_admin.initialize_app(cred)
 

@@ -2,9 +2,10 @@ from appLogging import get_logger
 import socket
 import datetime as dt
 
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory
 from notify import Notify
 from response import Response
+from static import safe_mac
 
 from relay import Relay
 from properties import ip, port, end_time, start_time
@@ -35,15 +36,17 @@ def test():
     return response.__dict__()
 
 
-@app.route('/relay/<pin_in>')
-def relay_action(pin_in):
+@app.route('/relay')
+def relay_action():
     global relay, running
-    logger.debug(f"relay[{pin_in}] action[ON] time[1]")
+    pin = request.args.get('pin_in', default=-1, type=int)
+    mac = request.args.get('mac', default="", type=str)
+    logger.debug(f"relay[{pin}] action[ON] time[1]")
     status = 200
     hr = dt.datetime.now().hour
-    if start_time <= hr < end_time:
+    if start_time <= hr < end_time or safe_mac(mac):
         if not running:
-            relay = Relay(int(pin_in), complete)
+            relay = Relay(int(pin), complete)
             relay.on()
             running = True
     else:
