@@ -8,14 +8,14 @@ module_logger = get_module_logger("notify")
 
 schedule = {'rules': [
     {'day': 7, 'ranges': [  # 0-6 Mon-Sun, 7 weekday, 8 weekend
-        {0, 7, 15},  # Start, End, Interval
-        {7, 16, 30},
-        {16, 20, 120},
-        {20, 0, 15}]},
+        {'s': 0, 'e': 7, 'i': 15},  # Start, End, Interval
+        {'s': 7, 'e': 16, 'i': 30},
+        {'s': 16, 'e': 20, 'i': 120},
+        {'s': 20, 'e': 0, 'i': 15}]},
     {'day': 8, 'ranges': [
-        {0, 7, 15},
-        {7, 20, 120},
-        {20, 0, 15}]}]}
+        {'s': 0, 'e': 7, 'i': 15},
+        {'s': 7, 'e': 20, 'i': 120},
+        {'s': 20, 'e': 0, 'i': 15}]}]}
 
 
 class Notify(object):
@@ -50,7 +50,7 @@ class Notify(object):
         for dow in schedule['rules']:               # DAY OF WEEK rules
             if day == dow['day'] or (dow['day'] == 7 and day < 5) or (dow['day'] == 8 and day > 4):
                 for hod in dow['ranges']:           # HR OF DAY rules
-                    if hod[0] <= hr < hod[1] and self._interval >= hod[2]:
+                    if hod['s'] <= hr < hod['e'] and self._interval >= hod['i']:
                         notify = True               # If day match and hr is within range and interval met
         return notify
 
