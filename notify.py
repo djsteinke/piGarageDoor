@@ -51,10 +51,13 @@ class Notify(object):
             if day == dow['day'] or (dow['day'] == 7 and day < 5) or (dow['day'] == 8 and day > 4):
                 module_logger.debug(f'Found Group - DayOfWeek[{dow["day"]}]')
                 for hod in dow['ranges']:           # HR OF DAY rules
-                    interval = 60/check_interval*hod['i']
-                    module_logger.debug(f'Found Rule - HOD[{hod["i"]}] Interval[{interval}]')
-                    if hod['s'] <= hr < hod['e'] and self._interval >= interval:
-                        notify = True               # If day match and hr is within range and interval met
+                    if hod['s'] <= hr < hod['e']:
+                        interval = 60/check_interval*hod['i']
+                        module_logger.debug(f'Found Rule - HOD[{hod["i"]}]')
+                        module_logger.debug(f'Interval[{self._interval} of {interval}]')
+                        if self._interval >= interval:
+                            module_logger.debug(f'Notify[True]')
+                            notify = True               # If day match and hr is within range and interval met
         return notify
 
     def start(self):
