@@ -5,7 +5,7 @@ import datetime as dt
 from flask import Flask, jsonify, request, send_from_directory
 from notify import Notify
 from response import Response
-from static import safe_mac
+from static import safe_mac, set_slash
 
 from relay import Relay
 from properties import ip, port, end_time, start_time
@@ -84,6 +84,7 @@ def favicon():
 
 
 if __name__ == '__main__':
+    set_slash()
     host_name = socket.gethostbyname(socket.gethostname())
     logger.info("machine host_name[" + host_name + "]")
     print(host_name + "[" + host_name[0: 3] + "]")

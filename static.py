@@ -1,11 +1,19 @@
 import logging
 import os
+import platform
 
 import properties
 
 c_dir = os.getcwd()
 p_dir = os.path.dirname(os.getcwd())
 safe_mac = ['58:cb:52:0b:a2:a7']
+slash = '/'
+
+
+def set_slash():
+    global slash
+    if platform.system() == 'Windows':
+        slash = '\\'
 
 
 def check_mac(mac):
