@@ -3,19 +3,18 @@ import datetime as dt
 
 from firebase.firebaseMessage import FirebaseMessage
 from appLogging import get_module_logger
-interval = 60
+check_interval = 15
 module_logger = get_module_logger("notify")
 
 schedule = {'rules': [
     {'day': 7, 'ranges': [  # 0-6 Mon-Sun, 7 weekday, 8 weekend
-        {'s': 0, 'e': 7, 'i': 15},  # Start, End, Interval
-        {'s': 7, 'e': 16, 'i': 30},
-        {'s': 16, 'e': 20, 'i': 120},
-        {'s': 20, 'e': 0, 'i': 15}]},
+        {'s': 0, 'e': 16, 'i': 15},  # Start, End, Interval
+        {'s': 16, 'e': 18, 'i': 120},
+        {'s': 18, 'e': 0, 'i': 15}]},
     {'day': 8, 'ranges': [
         {'s': 0, 'e': 7, 'i': 15},
-        {'s': 7, 'e': 20, 'i': 120},
-        {'s': 20, 'e': 0, 'i': 15}]}]}
+        {'s': 7, 'e': 18, 'i': 120},
+        {'s': 18, 'e': 0, 'i': 15}]}]}
 
 
 class Notify(object):
@@ -40,7 +39,7 @@ class Notify(object):
             self._interval = 0                          # Reset interval
 
         if self._running:
-            timer = threading.Timer(interval, self.check)
+            timer = threading.Timer(check_interval, self.check)
             timer.start()
 
     def send_notify(self):
@@ -50,13 +49,14 @@ class Notify(object):
         for dow in schedule['rules']:               # DAY OF WEEK rules
             if day == dow['day'] or (dow['day'] == 7 and day < 5) or (dow['day'] == 8 and day > 4):
                 for hod in dow['ranges']:           # HR OF DAY rules
-                    if hod['s'] <= hr < hod['e'] and self._interval >= hod['i']:
+                    interval = 60/check_interval*hod['i']
+                    if hod['s'] <= hr < hod['e'] and self._interval >= interval:
                         notify = True               # If day match and hr is within range and interval met
         return notify
 
     def start(self):
         self._running = True
-        timer = threading.Timer(0, self.check)
+        timer = threading.Timer(1, self.check)
         timer.start()
 
     def stop(self):
