@@ -18,6 +18,8 @@ class FirebaseMessage(object):
         client = "fNmiZCeNS4CP_ds1Q4C1uo:APA91bEAIdE5SUAmI6MTpYAkKwtX0vRjmXu2tavv3wRRxgGjIaByPRCVWm-9rYdxsK8-IrYGoRmVDVe3LqBxcxX3oghZ_k1mZ7cfBGdsGZvbnP9UqRhV7aq8SfBb8BXiFderCULhFi2x"
         key_file = p_dir + "\\firebaseKey.json"
         cred = credentials.Certificate(key_file)
+
+        module_logger.debug('credentials.Certificate')
         firebase_admin.initialize_app(cred)
 
         module_logger.debug('firebase_admin.initialize_app')
