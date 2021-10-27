@@ -35,7 +35,6 @@ class FirebaseMessage(object):
                 if not resp.success:
                     # The order of responses corresponds to the order of the registration tokens.
                     failed_tokens.append(registration_tokens[idx])
-            print('List of tokens that caused failures: {0}'.format(failed_tokens))
+            module_logger.debug('List of tokens that caused failures: {0}'.format(failed_tokens))
         # Response is a message ID string.
         module_logger.debug("Successfully sent message")
-        print('Successfully sent message:', response)
