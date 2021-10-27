@@ -17,6 +17,7 @@ class FirebaseMessage(object):
         module_logger.debug('send()')
         client = "fNmiZCeNS4CP_ds1Q4C1uo:APA91bEAIdE5SUAmI6MTpYAkKwtX0vRjmXu2tavv3wRRxgGjIaByPRCVWm-9rYdxsK8-IrYGoRmVDVe3LqBxcxX3oghZ_k1mZ7cfBGdsGZvbnP9UqRhV7aq8SfBb8BXiFderCULhFi2x"
         key_file = p_dir + "\\firebaseKey.json"
+        module_logger.debug(f'{key_file}')
         cred = credentials.Certificate(key_file)
 
         module_logger.debug('credentials.Certificate')
