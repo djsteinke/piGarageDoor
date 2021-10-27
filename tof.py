@@ -15,7 +15,6 @@ class TOF(object):
         self._sensor = None
 
     def get_range(self):
-        module_logger.debug("get_range().begin")
         if self._running:
             if not self._ranging:
                 self._ranging = True
