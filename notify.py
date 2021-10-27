@@ -27,6 +27,7 @@ class Notify(object):
     def check(self):
         r = self._tof.range
         # Check if door is open
+        module_logger.debug(f'Check Range[{r}]')
         if 0 < r < 300:
             self._open = True
             self._interval = self._interval + 1  # If door is open, add 1 min to interval
