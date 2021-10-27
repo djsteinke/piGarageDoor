@@ -1,8 +1,9 @@
 import threading
 import datetime as dt
 
-from firebase.firebaseMessage import FirebaseMessage
+from firebase.firebaseMessage import FirebaseMessage, send
 from appLogging import get_module_logger
+firbase_message = FirebaseMessage()
 check_interval = 15
 module_logger = get_module_logger("notify")
 
@@ -36,7 +37,7 @@ class Notify(object):
             self._interval = 0  # If door is closed, reset timer
 
         if self.send_notify():
-            FirebaseMessage('Garage Door Open').send()  # Send message via Firebase
+            send('Garage Door Open')  # Send message via Firebase
             self._interval = 0                          # Reset interval
 
         if self._running:
