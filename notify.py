@@ -8,7 +8,7 @@ module_logger = get_module_logger("notify")
 
 schedule = {'rules': [
     {'day': 7, 'ranges': [  # 0-6 Mon-Sun, 7 weekday, 8 weekend
-        {'s': 0, 'e': 16, 'i': 15},  # Start, End, Interval
+        {'s': 0, 'e': 16, 'i': 1},  # Start, End, Interval
         {'s': 16, 'e': 18, 'i': 120},
         {'s': 18, 'e': 0, 'i': 15}]},
     {'day': 8, 'ranges': [
@@ -62,9 +62,11 @@ class Notify(object):
         return notify
 
     def start(self):
+        module_logger.debug('start()')
         self._running = True
         timer = threading.Timer(1, self.check)
         timer.start()
 
     def stop(self):
+        module_logger.debug('stop()')
         self._running = False

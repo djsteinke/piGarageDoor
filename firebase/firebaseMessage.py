@@ -14,11 +14,13 @@ class FirebaseMessage(object):
         self._message = message
 
     def send(self):
+        module_logger.debug('send()')
         client = "fNmiZCeNS4CP_ds1Q4C1uo:APA91bEAIdE5SUAmI6MTpYAkKwtX0vRjmXu2tavv3wRRxgGjIaByPRCVWm-9rYdxsK8-IrYGoRmVDVe3LqBxcxX3oghZ_k1mZ7cfBGdsGZvbnP9UqRhV7aq8SfBb8BXiFderCULhFi2x"
         key_file = p_dir + "\\firebaseKey.json"
         cred = credentials.Certificate(key_file)
         firebase_admin.initialize_app(cred)
 
+        module_logger.debug('firebase_admin.initialize_app')
         registration_tokens = [
             client
         ]
@@ -27,6 +29,7 @@ class FirebaseMessage(object):
             data={'message': f'{self._message}'},
             tokens=registration_tokens
         )
+        module_logger.debug('messaging.MulticastMessage')
         response = messaging.send_multicast(message)
         if response.failure_count > 0:
             responses = response.responses
