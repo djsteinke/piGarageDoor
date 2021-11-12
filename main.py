@@ -53,7 +53,7 @@ def get_status():
     print("get_status()")
     val = tof.range
     ret = "CLOSED"
-    if 10 < val < 250:
+    if 10 < val < 275:
         ret = "OPEN"
     return jsonify(value=ret)
 
