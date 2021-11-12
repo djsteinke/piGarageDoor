@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Garage Door</title>
+    <style>
+        button {padding: 10px 15px 10px 15px}
+        tc.status {padding: 0px 5px 0px 0px}
+        div.a {padding: 20px 0px 20px 0px;}
+    </style>
+</head>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type=text/javascript>
+    $(function() {
+        $("#clickButton").click(function (event) { $.getJSON('/button_click', { },
+            function(data) { }); return false; }); }); </script>
+    <script type=text/javascript>
+    $(function() {
+        $("#getStatus").click(function (event) { $.getJSON('/get_status',
+            function(data) {
+                $("#statusValue").text(data.value)
+            });
+        }); </script>
+    <script type="text/javascript">
+$.ajax({
+  url: "/_getStatus",
+  data: {},
+  success: function( result ) {
+    $( "#statusValue" ).text( result.value );
+  }
+});
+    </script>
+<body onload="status">
+    <div class="a">
+        <table>
+            <tr>
+                <tc class="status">Status:</tc>
+                <tc id="statusValue"></tc>
+            </tr>
+        </table>
+    </div>
+    <button type="button" id="clickButton">CLICK</button>
+</body>
+</html>

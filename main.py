@@ -2,7 +2,7 @@ from appLogging import get_logger
 import socket
 import datetime as dt
 
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory, render_template
 from notify import Notify
 from response import Response
 from static import safe_mac, set_slash
@@ -27,6 +27,42 @@ def complete():
     running = False
 
 
+def button_click():
+    global relay, running
+    print("button_click()")
+    logger.debug(f"button_click()")
+    status = 200
+    hr = dt.datetime.now().hour
+    if start_time <= hr < end_time:
+        if not running:
+            relay = Relay(12, complete)
+            relay.on()
+            running = True
+    else:
+        status = 503
+    response = Response()
+    response.status_code = status
+    response.action = "relay"
+    response.data = '{"data": "value"}'
+    return jsonify(message="Success",
+                   statusCode=status), status
+
+
+@app.route("/_getStatus")
+def get_status():
+    print("get_status()")
+    val = tof.range
+    ret = "CLOSED"
+    if 10 < val < 250:
+        ret = "OPEN"
+    return jsonify(value=ret)
+
+
+@app.route('/')
+def home():
+    return render_template("home.html")
+
+
 @app.route('/test')
 def test():
     response = Response()
@@ -34,6 +70,11 @@ def test():
     response.action = "test"
     response.data = '{"data": "value"}'
     return response.__dict__()
+
+
+@app.route('/token')
+def add_token():
+    token = request.args.get('token', default="", type=str)
 
 
 @app.route('/relay')
