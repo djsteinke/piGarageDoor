@@ -16,14 +16,20 @@ class TOF(object):
 
     def get_range(self):
         if self._running:
+            start_timer = True
             if not self._ranging:
                 self._ranging = True
                 distance = self._sensor.get_distance()
-                module_logger.debug("Range: {0}mm".format(distance))
-                self._range = distance
-                self._ranging = False
-            timer = threading.Timer(self._delay, self.get_range)
-            timer.start()
+                if distance < 0:
+                    start_timer = False
+                    self.restart()
+                else:
+                    module_logger.debug("Range: {0}mm".format(distance))
+                    self._range = distance
+                    self._ranging = False
+            if start_timer:
+                timer = threading.Timer(self._delay, self.get_range)
+                timer.start()
 
     def get_status(self):
         if self._running:
@@ -46,6 +52,11 @@ class TOF(object):
         self._sensor.stop_ranging()
         self._sensor.close()
         self._running = False
+
+    def restart(self):
+        module_logger.debug("restart()")
+        self.stop()
+        self.start()
 
     @property
     def range(self):
