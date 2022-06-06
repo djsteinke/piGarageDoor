@@ -1,8 +1,11 @@
-import time
+import busio
+import board
+import adafruit_vl53l0x
 import threading
-import VL53L0X as VL53L0X
 from appLogging import get_module_logger
 
+
+i2c = busio.I2C(board.D15, board.D13)
 module_logger = get_module_logger("tof")
 timer_delay = 15
 
@@ -12,34 +15,23 @@ class TOF(object):
         self._running = False
         self._ranging = False
         self._range = -1
-        self._sensor = VL53L0X.VL53L0X(i2c_bus=3, i2c_address=0x29)
+        self._sensor = None
         self._timer = None
 
     def get_range(self):
         if self._running:
-            start_timer = True
-            if not self._ranging:
-                self._ranging = True
-                module_logger.debug("Start ranging")
-                self._sensor.start_ranging(VL53L0X.Vl53l0xAccuracyMode.LONG_RANGE)
-                cnt = 0
-                while True:
-                    cnt += 1
-                    distance = self._sensor.get_distance()
-                    module_logger.debug("Distance %0.1f" % distance)
-                    if cnt > 20 or distance > 0:
-                        break
-                    time.sleep(0.5)
-                self._sensor.stop_ranging()
-                module_logger.debug("Stop ranging")
-                if distance < 0:
-                    start_timer = False
-                    self.restart()
-                else:
-                    module_logger.debug("Range: {0}mm".format(distance))
-                    self._range = distance
-                    self._ranging = False
-            if start_timer:
+            restart = False
+            try:
+                distance = self._sensor.range
+                module_logger.debug("Range: {0}mm".format(distance))
+                self._range = distance
+            except RuntimeError as e:
+                module_logger.error(str(e))
+                restart = True
+
+            if restart:
+                self.restart()
+            else:
                 self._timer = threading.Timer(timer_delay, self.get_range)
                 self._timer.start()
 
@@ -53,13 +45,12 @@ class TOF(object):
         if not self._running:
             module_logger.debug("start()")
             self._running = True
-            self._sensor.open()
+            self._sensor = adafruit_vl53l0x.VL53L0X(i2c, 0x29)
             self._timer = threading.Timer(0.1, self.get_range)
             self._timer.start()
 
     def stop(self):
         module_logger.debug("stop()")
-        self._sensor.close()
         self._running = False
 
     def restart(self):
@@ -68,7 +59,6 @@ class TOF(object):
             self._timer.cancel()
             self._timer = None
         self.stop()
-        time.sleep(10)
         self.start()
 
     @property
