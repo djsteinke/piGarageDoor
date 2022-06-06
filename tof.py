@@ -22,17 +22,17 @@ class TOF(object):
                 self._ranging = True
                 module_logger.debug("Start ranging")
                 self._sensor.start_ranging(VL53L0X.Vl53l0xAccuracyMode.LONG_RANGE)
-                distance = -1
                 cnt = 0
-                while distance < 0 and cnt < 20:
+                while True:
                     cnt += 1
                     distance = self._sensor.get_distance()
                     module_logger.debug("Distance %0.1f" % distance)
+                    if cnt > 20 or distance > 0:
+                        break
                     time.sleep(0.5)
                 self._sensor.stop_ranging()
                 module_logger.debug("Stop ranging")
                 if distance < 0:
-                    module_logger.debug("Distance not found.")
                     start_timer = False
                     self.restart()
                 else:
