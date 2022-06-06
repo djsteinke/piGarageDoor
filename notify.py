@@ -31,7 +31,7 @@ class Notify(object):
         r = self._tof.range
         # Check if door is open
         prev_open = self._open
-        module_logger.debug(f'Check Range[{r}]')
+        # module_logger.debug(f'Check Range[{r}]')
         if 0 < r < 300:
             self._open = True
             self._interval = self._interval + 1  # If door is open, add 1 min to interval
@@ -56,17 +56,17 @@ class Notify(object):
         notify = False
         hr = dt.datetime.now().hour
         day = dt.datetime.now().weekday()
-        module_logger.debug(f'Now DOW[{day}] HR[{hr}]')
+        # module_logger.debug(f'Now DOW[{day}] HR[{hr}]')
         for dow in schedule['rules']:               # DAY OF WEEK rules
             if day == dow['day'] or (dow['day'] == 7 and day < 5) or (dow['day'] == 8 and day > 4):
-                module_logger.debug(f'Found Group - DayOfWeek[{dow["day"]}]')
+                # module_logger.debug(f'Found Group - DayOfWeek[{dow["day"]}]')
                 for hod in dow['ranges']:           # HR OF DAY rules
                     if hod['s'] <= hr < hod['e']:
                         interval = 60/check_interval*hod['i']
-                        module_logger.debug(f'Found Rule - HOD[{hod["i"]}]')
-                        module_logger.debug(f'Interval[{self._interval} of {interval}]')
+                        # module_logger.debug(f'Found Rule - HOD[{hod["i"]}]')
+                        # module_logger.debug(f'Interval[{self._interval} of {interval}]')
                         if self._interval >= interval:
-                            module_logger.debug(f'Notify[True]')
+                            # module_logger.debug(f'Notify[True]')
                             notify = True               # If day match and hr is within range and interval met
         return notify
 
