@@ -5,7 +5,7 @@ import datetime as dt
 from flask import Flask, jsonify, request, send_from_directory, render_template
 from notify import Notify
 from response import Response
-from static import safe_mac, set_slash
+from static import check_mac, set_slash
 
 from relay import Relay
 from properties import ip, port, end_time, start_time
@@ -85,7 +85,7 @@ def relay_action():
     logger.debug(f"relay[{pin}] action[ON] time[1]")
     status = 200
     hr = dt.datetime.now().hour
-    if start_time <= hr < end_time or safe_mac(mac):
+    if start_time <= hr < end_time or check_mac(mac):
         if not running:
             relay = Relay(int(pin), complete)
             relay.on()
