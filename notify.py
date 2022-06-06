@@ -7,6 +7,7 @@ firbase_message = FirebaseMessage()
 check_interval = 15
 module_logger = get_module_logger("notify")
 
+
 schedule = {'rules': [
     {'day': 7, 'ranges': [  # 0-6 Mon-Sun, 7 weekday, 8 weekend
         {'s': 0, 'e': 16, 'i': 15},  # Start, End, Interval
@@ -23,11 +24,13 @@ class Notify(object):
         self._tof = tof
         self._running = False
         self._open = False
+        self._notify = False
         self._interval = 0
 
     def check(self):
         r = self._tof.range
         # Check if door is open
+        prev_open = self._open
         module_logger.debug(f'Check Range[{r}]')
         if 0 < r < 300:
             self._open = True
@@ -38,7 +41,12 @@ class Notify(object):
 
         if self.send_notify():
             send('Garage Door Open')  # Send message via Firebase
+            self._notify = True
             self._interval = 0                          # Reset interval
+
+        if self._notify and prev_open and not self._open:
+            send('Garage Door Closed')  # Send message via Firebase
+            self._notify = False
 
         if self._running:
             timer = threading.Timer(check_interval, self.check)
