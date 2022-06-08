@@ -8,6 +8,7 @@ from appLogging import get_module_logger
 i2c = busio.I2C(board.D15, board.D13)
 module_logger = get_module_logger("tof")
 timer_delay = 15
+restart_delay = 600
 
 
 class TOF(object):
@@ -16,11 +17,14 @@ class TOF(object):
         self._ranging = False
         self._range = -1
         self._sensor = None
-        self._timer = None
+        self._timer = threading.Timer(timer_delay, self.get_range)
+        self._restart_timer = threading.Timer(restart_delay, self.restart)
 
     def get_range(self):
         if self._running:
             restart = False
+            #self._restart_timer =
+            self._restart_timer.start()
             try:
                 distance = self._sensor.range
                 module_logger.debug("Range: {0}mm".format(distance))
@@ -28,11 +32,11 @@ class TOF(object):
             except RuntimeError as e:
                 module_logger.error(str(e))
                 restart = True
-
+            self._restart_timer.cancel()
             if restart:
                 self.restart()
             else:
-                self._timer = threading.Timer(timer_delay, self.get_range)
+                #self._timer =
                 self._timer.start()
 
     def get_status(self):
@@ -46,8 +50,9 @@ class TOF(object):
             module_logger.debug("start()")
             self._running = True
             self._sensor = adafruit_vl53l0x.VL53L0X(i2c, 0x29)
-            self._timer = threading.Timer(0.1, self.get_range)
-            self._timer.start()
+            threading.Timer(0.1, self.get_range).start()
+            #self._timer =
+            #self._timer.start()
 
     def stop(self):
         module_logger.debug("stop()")
@@ -55,9 +60,9 @@ class TOF(object):
 
     def restart(self):
         module_logger.debug("restart()")
-        if self._timer is not None:
-            self._timer.cancel()
-            self._timer = None
+        self._timer.cancel()
+        #if self._timer is not None:
+        #    self._timer = None
         self.stop()
         self.start()
 
