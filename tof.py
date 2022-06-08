@@ -17,13 +17,13 @@ class TOF(object):
         self._ranging = False
         self._range = -1
         self._sensor = None
-        self._timer = threading.Timer(timer_delay, self.get_range)
-        self._restart_timer = threading.Timer(restart_delay, self.restart)
+        self._timer = None
+        self._restart_timer = None
 
     def get_range(self):
         if self._running:
             restart = False
-            #self._restart_timer =
+            self._restart_timer = threading.Timer(restart_delay, self.restart)
             self._restart_timer.start()
             try:
                 distance = self._sensor.range
@@ -33,10 +33,11 @@ class TOF(object):
                 module_logger.error(str(e))
                 restart = True
             self._restart_timer.cancel()
+            self._restart_timer = None
             if restart:
                 self.restart()
             else:
-                #self._timer =
+                self._timer = threading.Timer(timer_delay, self.get_range)
                 self._timer.start()
 
     def get_status(self):
@@ -60,9 +61,10 @@ class TOF(object):
 
     def restart(self):
         module_logger.debug("restart()")
-        self._timer.cancel()
-        #if self._timer is not None:
-        #    self._timer = None
+        if self._timer is not None:
+            self._timer.cancel()
+            self._timer = None
+            self._restart_timer = None
         self.stop()
         self.start()
 
