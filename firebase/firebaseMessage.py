@@ -5,6 +5,7 @@ from firebase_admin import credentials
 from firebase_admin import db
 from firebase_admin.exceptions import FirebaseError
 from static import p_dir, slash
+from relay import Relay
 
 module_logger = get_module_logger('firebaseMessage')
 client = "fNmiZCeNS4CP_ds1Q4C1uo:APA91bEAIdE5SUAmI6MTpYAkKwtX0vRjmXu2tavv3wRRxgGjIaByPRCVWm-9rYdxsK8-IrYGoRmVDVe3LqBxcxX3oghZ_k1mZ7cfBGdsGZvbnP9UqRhV7aq8SfBb8BXiFderCULhFi2x"
@@ -39,6 +40,9 @@ def listener(event):
     if event.data:
         module_logger.debug('open garage door')
         db_trigger.set(False)
+        # need pin... how to handle "in progress" ???
+        # relay = Relay(int(pin), complete)
+        # relay.on()
 
 
 def send(message):
