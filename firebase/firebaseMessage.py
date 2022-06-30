@@ -12,6 +12,14 @@ client = "fNmiZCeNS4CP_ds1Q4C1uo:APA91bEAIdE5SUAmI6MTpYAkKwtX0vRjmXu2tavv3wRRxgG
 
 databaseURL = "https://rn5notifications-default-rtdb.firebaseio.com/"
 appKey = "garageDoor"
+
+key_file = p_dir + slash + "firebaseKey.json"
+module_logger.debug(f'{key_file}')
+cred = credentials.Certificate(key_file)
+
+firebase_admin.initialize_app(cred, {
+    'databaseURL': databaseURL
+})
 ref = db.reference(appKey)
 db_trigger = ref.child('trigger')
 db_state = ref.child('state')
@@ -78,23 +86,4 @@ def start_listener():
         start_listener()
 
 
-class FirebaseMessage(object):
-    def __init__(self):
-        self._cred = None
-        self.set_credentials()
-        self.initialize_firebase_admin()
-
-    def initialize_firebase_admin(self):
-        module_logger.debug('initialize_firebase_admin()')
-        firebase_admin.initialize_app(self._cred, {
-            'databaseURL': databaseURL
-        })
-        start_listener()
-        module_logger.debug('initialize_firebase_admin() - complete')
-
-    def set_credentials(self):
-        module_logger.debug('set_credentials()')
-        key_file = p_dir + slash + "firebaseKey.json"
-        module_logger.debug(f'{key_file}')
-        self._cred = credentials.Certificate(key_file)
-        module_logger.debug('set_credentials() - complete')
+start_listener()

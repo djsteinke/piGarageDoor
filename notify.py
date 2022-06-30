@@ -1,9 +1,8 @@
 import threading
 import datetime as dt
 
-from firebase.firebaseMessage import FirebaseMessage, send
+from firebase.firebaseMessage import send
 from appLogging import get_module_logger
-firbase_message = FirebaseMessage()
 check_interval = 15
 module_logger = get_module_logger("notify")
 
