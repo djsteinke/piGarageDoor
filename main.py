@@ -6,7 +6,8 @@ from flask import Flask, jsonify, request, send_from_directory, render_template
 from notify import Notify
 from response import Response
 from static import check_mac, set_slash
-from firebase.firebase_db import FirebaseDB
+from firebase.firebaseMessage import start_listener
+import threading
 from relay import Relay
 from properties import ip, port, end_time, start_time
 import os
@@ -136,4 +137,5 @@ if __name__ == '__main__':
     logger.info(f"app host_name[{host_name}]")
     tof.start()
     notify.start()
+    threading.Timer(1, start_listener).start()
     app.run(host=host_name, port=port)

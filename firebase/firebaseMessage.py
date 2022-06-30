@@ -85,6 +85,3 @@ def start_listener():
     except FirebaseError:
         module_logger('failed to start listener... trying again.')
         start_listener()
-
-
-threading.Timer(1, start_listener).start()
