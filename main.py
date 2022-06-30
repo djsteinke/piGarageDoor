@@ -130,6 +130,7 @@ def favicon():
 
 
 def listener(event):
+    print('firebase listener...')
     print(event.event_type)  # can be 'put' or 'patch'
     print(event.path)  # relative to the reference, it seems
     print(event.data)  # new data at /reference/event.path. None if deleted
