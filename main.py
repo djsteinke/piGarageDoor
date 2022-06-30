@@ -26,6 +26,7 @@ running = False
 
 appKey = "garageDoor"
 ref = db.reference(appKey)
+db_trigger = db.reference(appKey + "/trigger")
 
 
 def complete():
@@ -132,7 +133,7 @@ def favicon():
 
 def trigger():
     logger.debug('trigger...')
-    ref.child('trigger').update(True)
+    db_trigger.update(True)
     threading.Timer(5, trigger).start()
 
 
@@ -155,6 +156,6 @@ if __name__ == '__main__':
     logger.info(f"app host_name[{host_name}]")
     tof.start()
     notify.start()
-    ref.child("trigger").listen(listener)
+    db_trigger.listen(listener)
     threading.Timer(5, trigger).start()
     app.run(host=host_name, port=port)
