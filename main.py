@@ -3,6 +3,7 @@ import socket
 import datetime as dt
 import firebase_admin
 from firebase_admin import db
+import threading
 
 from flask import Flask, jsonify, request, send_from_directory, render_template
 from notify import Notify
@@ -129,11 +130,15 @@ def favicon():
                                mimetype='image/vnd.microsoft.icon')
 
 
+def trigger():
+    ref.child('trigger').update(True)
+
+
 def listener(event):
     print('firebase listener...')
-    print(event.event_type)  # can be 'put' or 'patch'
-    print(event.path)  # relative to the reference, it seems
-    print(event.data)  # new data at /reference/event.path. None if deleted
+    if event.data:
+        print('open garage door')
+        ref.child('trigger').update(False)
 
 
 if __name__ == '__main__':
@@ -149,5 +154,5 @@ if __name__ == '__main__':
     tof.start()
     notify.start()
     ref.child("trigger").listen(listener)
-    ref.child('trigger').push(False)
+    threading.Timer(1, trigger).start()
     app.run(host=host_name, port=port)
