@@ -149,4 +149,5 @@ if __name__ == '__main__':
     tof.start()
     notify.start()
     ref.child("trigger").listen(listener)
+    ref.child('trigger').push(False)
     app.run(host=host_name, port=port)
