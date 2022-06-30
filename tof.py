@@ -28,7 +28,7 @@ class TOF(object):
             self._restart_timer.start()
             try:
                 distance = self._sensor.range
-                module_logger.debug("Range: {0}mm".format(distance))
+                # module_logger.debug("Range: {0}mm".format(distance))
                 self._range = distance
                 set_state(int(distance))
             except RuntimeError as e:
