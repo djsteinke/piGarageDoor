@@ -5,6 +5,7 @@ from firebase_admin import credentials
 from firebase_admin import db
 from firebase_admin.exceptions import FirebaseError
 from static import p_dir, slash
+import threading
 from relay import Relay
 
 module_logger = get_module_logger('firebaseMessage')
@@ -86,4 +87,4 @@ def start_listener():
         start_listener()
 
 
-start_listener()
+threading.Timer(1, start_listener).start()
