@@ -131,15 +131,15 @@ def favicon():
 
 
 def trigger():
-    print('trigger...')
+    logger.debug('trigger...')
     ref.child('trigger').update(True)
     threading.Timer(5, trigger).start()
 
 
 def listener(event):
-    print('firebase listener...')
+    logger.debug('firebase listener...')
     if event.data:
-        print('open garage door')
+        logger.debug('open garage door')
         ref.child('trigger').update(False)
 
 
