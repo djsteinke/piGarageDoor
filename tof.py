@@ -3,6 +3,7 @@ import board
 import adafruit_vl53l0x
 import threading
 from appLogging import get_module_logger
+from firebase.firebaseMessage import set_state
 
 
 i2c = busio.I2C(board.D15, board.D13)
@@ -29,6 +30,7 @@ class TOF(object):
                 distance = self._sensor.range
                 module_logger.debug("Range: {0}mm".format(distance))
                 self._range = distance
+                set_state(int(distance))
             except RuntimeError as e:
                 module_logger.error(str(e))
                 restart = True
@@ -52,8 +54,6 @@ class TOF(object):
             self._running = True
             self._sensor = adafruit_vl53l0x.VL53L0X(i2c, 0x29)
             threading.Timer(0.1, self.get_range).start()
-            #self._timer =
-            #self._timer.start()
 
     def stop(self):
         module_logger.debug("stop()")
