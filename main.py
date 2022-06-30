@@ -1,6 +1,8 @@
 from appLogging import get_logger
 import socket
 import datetime as dt
+import firebase_admin
+from firebase_admin import db
 
 from flask import Flask, jsonify, request, send_from_directory, render_template
 from notify import Notify
@@ -20,6 +22,16 @@ tof = TOF()
 notify = Notify(tof)
 relay = None
 running = False
+
+databaseURL = "https://rn5notifications-default-rtdb.firebaseio.com/"
+appKey = "garageDoor"
+
+cred_obj = firebase_admin.credentials.Certificate("/home/pi/firebaseKey.json")
+default_app = firebase_admin.initialize_app(cred_obj, {
+    'databaseURL': databaseURL
+})
+
+ref = db.reference(appKey)
 
 
 def complete():
@@ -124,6 +136,12 @@ def favicon():
                                mimetype='image/vnd.microsoft.icon')
 
 
+def listener(event):
+    print(event.event_type)  # can be 'put' or 'patch'
+    print(event.path)  # relative to the reference, it seems
+    print(event.data)  # new data at /reference/event.path. None if deleted
+
+
 if __name__ == '__main__':
     set_slash()
     host_name = socket.gethostbyname(socket.gethostname())
@@ -136,4 +154,5 @@ if __name__ == '__main__':
     logger.info(f"app host_name[{host_name}]")
     tof.start()
     notify.start()
+    ref.child("trigger").listen(listener)
     app.run(host=host_name, port=port)
