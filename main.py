@@ -23,14 +23,7 @@ notify = Notify(tof)
 relay = None
 running = False
 
-databaseURL = "https://rn5notifications-default-rtdb.firebaseio.com/"
 appKey = "garageDoor"
-
-cred_obj = firebase_admin.credentials.Certificate("/home/pi/firebaseKey.json")
-default_app = firebase_admin.initialize_app(cred_obj, {
-    'databaseURL': databaseURL
-})
-
 ref = db.reference(appKey)
 
 

@@ -9,6 +9,8 @@ from static import p_dir, slash
 module_logger = get_module_logger('firebaseMessage')
 client = "fNmiZCeNS4CP_ds1Q4C1uo:APA91bEAIdE5SUAmI6MTpYAkKwtX0vRjmXu2tavv3wRRxgGjIaByPRCVWm-9rYdxsK8-IrYGoRmVDVe3LqBxcxX3oghZ_k1mZ7cfBGdsGZvbnP9UqRhV7aq8SfBb8BXiFderCULhFi2x"
 
+databaseURL = "https://rn5notifications-default-rtdb.firebaseio.com/"
+
 
 def send(message):
     module_logger.debug('send()')
@@ -43,7 +45,9 @@ class FirebaseMessage(object):
 
     def initialize_firebase_admin(self):
         module_logger.debug('initialize_firebase_admin()')
-        firebase_admin.initialize_app(self._cred)
+        firebase_admin.initialize_app(self._cred, {
+            'databaseURL': databaseURL
+        })
         module_logger.debug('initialize_firebase_admin() - complete')
 
     def set_credentials(self):
