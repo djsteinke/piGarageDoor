@@ -14,12 +14,10 @@ class FirebaseDB(object):
 
     def start(self):
         self._trigger.listen(self.listener)
-        threading.Timer(5, self.trigger).start()
 
     def trigger(self):
         module_logger.debug('trigger...')
         self._trigger.set(True)
-        threading.Timer(5, self.trigger).start()
 
     def listener(self, event):
         module_logger.debug('firebase listener...')
