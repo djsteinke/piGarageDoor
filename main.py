@@ -1,15 +1,12 @@
 from appLogging import get_logger
 import socket
 import datetime as dt
-import firebase_admin
-from firebase_admin import db
-import threading
 
 from flask import Flask, jsonify, request, send_from_directory, render_template
 from notify import Notify
 from response import Response
 from static import check_mac, set_slash
-
+from firebase.firebase_db import FirebaseDB
 from relay import Relay
 from properties import ip, port, end_time, start_time
 import os
@@ -23,10 +20,6 @@ tof = TOF()
 notify = Notify(tof)
 relay = None
 running = False
-
-appKey = "garageDoor"
-ref = db.reference(appKey)
-db_trigger = db.reference(appKey + "/trigger")
 
 
 def complete():
@@ -131,19 +124,6 @@ def favicon():
                                mimetype='image/vnd.microsoft.icon')
 
 
-def trigger():
-    logger.debug('trigger...')
-    db_trigger.update(True)
-    threading.Timer(5, trigger).start()
-
-
-def listener(event):
-    logger.debug('firebase listener...')
-    if event.data:
-        logger.debug('open garage door')
-        ref.child('trigger').update(False)
-
-
 if __name__ == '__main__':
     set_slash()
     host_name = socket.gethostbyname(socket.gethostname())
@@ -156,6 +136,6 @@ if __name__ == '__main__':
     logger.info(f"app host_name[{host_name}]")
     tof.start()
     notify.start()
-    db_trigger.listen(listener)
-    threading.Timer(5, trigger).start()
+    firebase_db = FirebaseDB()
+    firebase_db.start()
     app.run(host=host_name, port=port)
