@@ -1,15 +1,44 @@
-import os
-
 from appLogging import get_module_logger
 from firebase_admin import messaging
 import firebase_admin
 from firebase_admin import credentials
+from firebase_admin import db
+from firebase_admin.exceptions import FirebaseError
 from static import p_dir, slash
 
 module_logger = get_module_logger('firebaseMessage')
 client = "fNmiZCeNS4CP_ds1Q4C1uo:APA91bEAIdE5SUAmI6MTpYAkKwtX0vRjmXu2tavv3wRRxgGjIaByPRCVWm-9rYdxsK8-IrYGoRmVDVe3LqBxcxX3oghZ_k1mZ7cfBGdsGZvbnP9UqRhV7aq8SfBb8BXiFderCULhFi2x"
 
 databaseURL = "https://rn5notifications-default-rtdb.firebaseio.com/"
+appKey = "garageDoor"
+ref = db.reference(appKey)
+db_trigger = ref.child('trigger')
+db_state = ref.child('state')
+state = "closed"
+
+
+def trigger():
+    module_logger.debug('trigger...')
+    db_trigger.set(True)
+
+
+def set_state(range_mm):
+    global state
+    state_new = "closed"
+    if range_mm < 400:
+        state_new = "open"
+    elif range_mm < 1000:
+        state_new = "full"
+    if state_new != state:
+        db_state.set(state_new)
+    state = state_new
+
+
+def listener(event):
+    module_logger.debug('firebase listener...')
+    if event.data:
+        module_logger.debug('open garage door')
+        db_trigger.set(False)
 
 
 def send(message):
@@ -37,6 +66,14 @@ def send(message):
     module_logger.debug("Successfully sent message")
 
 
+def start_listener():
+    try:
+        db_trigger.listen(listener)
+    except FirebaseError:
+        module_logger('failed to start listener... trying again.')
+        start_listener()
+
+
 class FirebaseMessage(object):
     def __init__(self):
         self._cred = None
@@ -48,6 +85,7 @@ class FirebaseMessage(object):
         firebase_admin.initialize_app(self._cred, {
             'databaseURL': databaseURL
         })
+        start_listener()
         module_logger.debug('initialize_firebase_admin() - complete')
 
     def set_credentials(self):

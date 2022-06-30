@@ -136,6 +136,4 @@ if __name__ == '__main__':
     logger.info(f"app host_name[{host_name}]")
     tof.start()
     notify.start()
-    firebase_db = FirebaseDB()
-    firebase_db.start()
     app.run(host=host_name, port=port)
