@@ -132,6 +132,7 @@ def favicon():
 
 def trigger():
     ref.child('trigger').update(True)
+    threading.Timer(5, trigger).start()
 
 
 def listener(event):
@@ -154,5 +155,5 @@ if __name__ == '__main__':
     tof.start()
     notify.start()
     ref.child("trigger").listen(listener)
-    threading.Timer(1, trigger).start()
+    threading.Timer(5, trigger).start()
     app.run(host=host_name, port=port)
