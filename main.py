@@ -131,6 +131,7 @@ def favicon():
 
 
 def trigger():
+    print('trigger...')
     ref.child('trigger').update(True)
     threading.Timer(5, trigger).start()
 
