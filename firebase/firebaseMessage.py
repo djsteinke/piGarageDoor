@@ -48,10 +48,10 @@ def listener(event):
     module_logger.debug('firebase listener...')
     if event.data:
         module_logger.debug('open garage door')
+        # pin = 12
+        relay = Relay(12, None)
+        relay.on()
         db_trigger.set(False)
-        # need pin... how to handle "in progress" ???
-        # relay = Relay(int(pin), complete)
-        # relay.on()
 
 
 def send(message):
