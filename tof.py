@@ -1,10 +1,11 @@
+import subprocess
+
 import busio
 import board
 import adafruit_vl53l0x
 import threading
 from appLogging import get_module_logger
 from firebase.firebaseMessage import set_state
-
 
 i2c = busio.I2C(board.D15, board.D13)
 module_logger = get_module_logger("tof")
@@ -64,9 +65,16 @@ class TOF(object):
         if self._timer is not None:
             self._timer.cancel()
             self._timer = None
+        if self._restart_timer is not None:
             self._restart_timer = None
-        self.stop()
-        self.start()
+        stdout, stderr = subprocess.Popen(['/home/pi/projects/piGarageDoor/', './mgr', 'r'],
+                                          stdout=subprocess.PIPE,
+                                          stderr=subprocess.PIPE)
+        module_logger.debug("stdout: " + stdout.decode())
+        module_logger.error("stderr: " + stderr.decode())
+        if len(stderr.decode()) > 0:
+            self.stop()
+            self.start()
 
     @property
     def range(self):
