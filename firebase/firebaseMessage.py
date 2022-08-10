@@ -8,7 +8,7 @@ from static import p_dir, slash
 import threading
 from relay import Relay
 
-module_logger = get_module_logger('firebaseMessage')
+module_logger = get_module_logger('main.firebaseMessage')
 # pixel 3 - client = "fNmiZCeNS4CP_ds1Q4C1uo:APA91bEAIdE5SUAmI6MTpYAkKwtX0vRjmXu2tavv3wRRxgGjIaByPRCVWm-9rYdxsK8-IrYGoRmVDVe3LqBxcxX3oghZ_k1mZ7cfBGdsGZvbnP9UqRhV7aq8SfBb8BXiFderCULhFi2x"
 client = "dPg56sg2Q_KVyX38XxL9TH:APA91bHJ0fm1cu20iy4lS-fZcE_MPBwkxmEGtLc_Zq2-InMVaJ_N_VB6NqTW3iffSSl_i0s2g-XYBEK8ze3arvYM8Y3aSjh7OBkVJAD5CW4UPKerXJo_v1k-7H4DvmBGE6dLW_CRwv6v"
 databaseURL = "https://rn5notifications-default-rtdb.firebaseio.com/"
