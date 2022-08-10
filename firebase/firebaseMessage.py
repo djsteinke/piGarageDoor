@@ -81,6 +81,7 @@ def send(message):
 
 def start_listener():
     try:
+        module_logger.debug('start_listener()')
         db_trigger.listen(listener)
     except FirebaseError:
         module_logger.error('failed to start listener... trying again.')
