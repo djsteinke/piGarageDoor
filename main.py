@@ -135,7 +135,7 @@ if __name__ == '__main__':
     else:
         host_name = "localhost"
     logger.info(f"app host_name[{host_name}]")
-    tof.start()
+    # tof.start()
     notify.start()
     threading.Timer(1, start_listener).start()
     app.run(host=host_name, port=port)
