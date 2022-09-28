@@ -125,6 +125,11 @@ def favicon():
                                mimetype='image/vnd.microsoft.icon')
 
 
+def tof_started():
+    logger.debug("tof_started")
+    notify.start()
+
+
 if __name__ == '__main__':
     set_slash()
     host_name = socket.gethostbyname(socket.gethostname())
@@ -135,7 +140,10 @@ if __name__ == '__main__':
     else:
         host_name = "localhost"
     logger.info(f"app host_name[{host_name}]")
-    tof.start()
-    notify.start()
+    #tof.start()
+    #notify.start()
+    tof = TOF(tof_started)
+    notify = Notify(tof)
+    threading.Timer(1, tof.start).start()
     threading.Timer(1, start_listener).start()
     app.run(host=host_name, port=port)

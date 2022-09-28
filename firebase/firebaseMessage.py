@@ -7,6 +7,8 @@ from firebase_admin.exceptions import FirebaseError
 from static import p_dir, slash
 import threading
 from relay import Relay
+from urllib import request, error
+from time import sleep, time
 
 module_logger = get_module_logger('firebaseMessage')
 # pixel 3 - client = "fNmiZCeNS4CP_ds1Q4C1uo:APA91bEAIdE5SUAmI6MTpYAkKwtX0vRjmXu2tavv3wRRxgGjIaByPRCVWm-9rYdxsK8-IrYGoRmVDVe3LqBxcxX3oghZ_k1mZ7cfBGdsGZvbnP9UqRhV7aq8SfBb8BXiFderCULhFi2x"
@@ -23,8 +25,29 @@ firebase_admin.initialize_app(cred, {
 })
 ref = db.reference(appKey)
 db_trigger = ref.child('trigger')
+db_trigger_stream = None
 db_state = ref.child('state')
 state = "closed"
+
+network_up = False
+timer = 0
+last_listener_update = -1
+
+
+def internet_on():
+    global network_up
+    while True:
+        try:
+            request.urlopen("http://google.com")
+            if not network_up:
+                module_logger.debug('Network UP.')
+            network_up = True
+            return network_up
+        except error.URLError as e:
+            if network_up:
+                module_logger.error('Network DOWN. Reason: ' + e.reason)
+            network_up = False
+        sleep(15)
 
 
 def trigger():
@@ -45,7 +68,9 @@ def set_state(range_mm):
 
 
 def listener(event):
+    global timer, last_listener_update
     module_logger.debug('firebase listener...')
+    last_listener_update = round(time())
     if event.data:
         module_logger.debug('open garage door')
         # pin = 12
@@ -79,9 +104,46 @@ def send(message):
     module_logger.debug("Successfully sent message")
 
 
-def start_listener():
+def start_listener_old():
     try:
         db_trigger.listen(listener)
     except FirebaseError:
         module_logger('failed to start listener... trying again.')
-        start_listener()
+        start_listener_old()
+
+
+def start_listener():
+    global timer, db_trigger_stream
+    try:
+        db_trigger_stream = db_trigger.listen(listener)
+        module_logger.debug('stream open...')
+    except FirebaseError as e:
+        module_logger.error('failed to start listener... ' + e.cause)
+
+    timer = 100
+    while True:
+        if internet_on():
+            # If it has been more than an hour since the listener was triggered (automatically every hour)
+            # restart the stream
+            if last_listener_update > 0 and round(time()) - last_listener_update > 3660:
+                module_logger.error('listener has not triggered in more than 1 hr. restart listener.')
+                timer = 0
+
+            if timer == 0:
+                try:
+                    db_trigger_stream.close()
+                    module_logger.debug('stream closed...')
+                except any as e:
+                    module_logger.debug('no stream to close... ' + e.cause)
+                    pass
+                try:
+                    db_trigger_stream = db_trigger.listen(listener)
+                    module_logger.debug('streams open...')
+                    timer = 100
+                except FirebaseError as e:
+                    module_logger.error('failed to start listeners... ' + e.cause)
+                    timer = 0
+            sleep(15)
+        else:
+            sleep(1)
+            timer -= 1 if timer > 0 else 0

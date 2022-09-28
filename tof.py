@@ -14,13 +14,14 @@ restart_delay = 600
 
 
 class TOF(object):
-    def __init__(self):
+    def __init__(self, callback=None):
         self._running = False
         self._ranging = False
         self._range = -1
         self._sensor = None
         self._timer = None
         self._restart_timer = None
+        self._start_callback = callback
 
     def get_range(self):
         if self._running:
@@ -54,6 +55,8 @@ class TOF(object):
             module_logger.debug("start()")
             self._running = True
             self._sensor = adafruit_vl53l0x.VL53L0X(i2c, 0x29)
+            if self._start_callback is not None:
+                self._start_callback()
             threading.Timer(0.1, self.get_range).start()
 
     def stop(self):
