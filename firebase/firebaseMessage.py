@@ -108,7 +108,7 @@ def start_listener_old():
     try:
         db_trigger.listen(listener)
     except FirebaseError:
-        module_logger('failed to start listener... trying again.')
+        module_logger.error('failed to start listener... trying again.')
         start_listener_old()
 
 
