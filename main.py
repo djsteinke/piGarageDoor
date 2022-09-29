@@ -6,7 +6,7 @@ from flask import Flask, jsonify, request, send_from_directory, render_template
 from notify import Notify
 from response import Response
 from static import check_mac, set_slash
-from firebase.firebaseMessage import start_listener
+from firebase.firebaseMessage import start_listener, trigger
 import threading
 from relay import Relay
 from properties import ip, port, end_time, start_time
@@ -117,6 +117,11 @@ def door(action):
     else:
         val = "Invalid action"
     return {"value": val}, 200
+
+
+@app.route('/_trigger')
+def trigger_door():
+    trigger()
 
 
 @app.route('/favicon.ico')
