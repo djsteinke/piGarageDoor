@@ -122,6 +122,8 @@ def door(action):
 @app.route('/_trigger')
 def trigger_door():
     trigger()
+    return jsonify(message="Success",
+                   statusCode=200), 200
 
 
 @app.route('/favicon.ico')
