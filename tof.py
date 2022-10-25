@@ -55,6 +55,8 @@ class TOF(object):
             module_logger.debug("start()")
             self._running = True
             self._sensor = adafruit_vl53l0x.VL53L0X(i2c, 0x29)
+            module_logger.debug("_sensor")
+            module_logger.debug(self._sensor)
             if self._start_callback is not None:
                 self._start_callback()
             threading.Timer(0.1, self.get_range).start()
