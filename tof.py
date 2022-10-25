@@ -7,7 +7,7 @@ import threading
 from appLogging import get_module_logger
 from firebase.firebaseMessage import set_state
 
-i2c = busio.I2C(board.SCL, board.SDA)
+i2c = busio.I2C(board.SCL_2, board.SDA_2)
 module_logger = get_module_logger("tof")
 timer_delay = 15
 restart_delay = 600
