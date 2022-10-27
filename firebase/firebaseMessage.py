@@ -120,7 +120,7 @@ def start_listener():
         if internet_on():
             # If it has been more than an hour since the listener was triggered (automatically every hour)
             # restart the stream
-            if last_listener_update > 0 and round(time()) - last_listener_update > 3660:
+            if last_listener_update < 0 or round(time()) - last_listener_update > 3660:
                 module_logger.error('listener has not triggered in more than 1 hr. restart listener.')
                 reset_stream = True
 
