@@ -128,7 +128,7 @@ def start_listener():
                 try:
                     db_trigger_stream.close()
                     module_logger.debug('stream closed...')
-                except any as e:
+                except:
                     module_logger.debug('no stream to close... ')
                     pass
                 try:
