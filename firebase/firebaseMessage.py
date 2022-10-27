@@ -116,12 +116,6 @@ def start_listener_old():
 
 def start_listener():
     global timer, db_trigger_stream, reset_stream
-    try:
-        db_trigger_stream = db_trigger.listen(listener)
-        module_logger.debug('stream open...')
-    except FirebaseError:
-        module_logger.error('failed to start listener... ')
-
     while True:
         if internet_on():
             # If it has been more than an hour since the listener was triggered (automatically every hour)
