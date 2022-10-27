@@ -138,4 +138,4 @@ def start_listener():
                 except FirebaseError:
                     module_logger.error('failed to start listeners... ')
                     reset_stream = True
-            sleep(15)
+        sleep(15)
