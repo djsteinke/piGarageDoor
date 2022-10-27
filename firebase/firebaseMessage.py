@@ -42,7 +42,7 @@ def internet_on():
             if not network_up:
                 module_logger.debug('Network UP.')
             network_up = True
-        except error.URLError as e:
+        except error.URLError:
             if network_up:
                 module_logger.error('Network DOWN!!!')
             network_up = False
@@ -116,7 +116,7 @@ def start_listener():
     try:
         db_trigger_stream = db_trigger.listen(listener)
         module_logger.debug('stream open...')
-    except FirebaseError as e:
+    except FirebaseError:
         module_logger.error('failed to start listener... ')
 
     timer = 100
@@ -139,7 +139,7 @@ def start_listener():
                     db_trigger_stream = db_trigger.listen(listener)
                     module_logger.debug('streams open...')
                     timer = 100
-                except FirebaseError as e:
+                except FirebaseError:
                     module_logger.error('failed to start listeners... ')
                     timer = 0
             sleep(15)
