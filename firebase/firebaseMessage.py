@@ -42,7 +42,7 @@ def internet_on():
         try:
             request.urlopen("http://google.com")
             if not network_up:
-                module_logger.debug('Network UP.')
+                module_logger.info('Network UP.')
             network_up = True
             return network_up
         except error.URLError:
@@ -76,13 +76,14 @@ def listener(event):
     last_listener_update = round(time())
     if event.data:
         trigger_time = ref.child("triggerTime").get()
-        if datetime.now().timestamp() - trigger_time < 60:
-            module_logger.debug('open garage door')
+        now = datetime.now().timestamp()
+        if now - trigger_time < 60:
+            module_logger.info('open garage door', trigger_time, now)
             # pin = 12
             relay = Relay(12, None)
             relay.on()
         else:
-            module_logger.debug('garage door triggered more than 1 min ago', trigger_time)
+            module_logger.info('garage door triggered more than 1 min ago', trigger_time, now)
         db_trigger.set(False)
 
 
