@@ -17,7 +17,7 @@ client = "dPg56sg2Q_KVyX38XxL9TH:APA91bHJ0fm1cu20iy4lS-fZcE_MPBwkxmEGtLc_Zq2-InM
 databaseURL = "https://rn5notifications-default-rtdb.firebaseio.com/"
 appKey = "garageDoor"
 
-key_file = p_dir + slash + "firebaseKey.json"
+key_file = "/home/pi/projects/firebaseKey.json"
 module_logger.debug(f'{key_file}')
 cred = credentials.Certificate(key_file)
 
