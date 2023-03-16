@@ -9,6 +9,7 @@ import threading
 from relay import Relay
 from urllib import request, error
 from time import sleep, time
+from datetime import datetime
 
 module_logger = get_module_logger('firebaseMessage')
 # pixel 3 - client = "fNmiZCeNS4CP_ds1Q4C1uo:APA91bEAIdE5SUAmI6MTpYAkKwtX0vRjmXu2tavv3wRRxgGjIaByPRCVWm-9rYdxsK8-IrYGoRmVDVe3LqBxcxX3oghZ_k1mZ7cfBGdsGZvbnP9UqRhV7aq8SfBb8BXiFderCULhFi2x"
@@ -74,10 +75,14 @@ def listener(event):
     module_logger.debug('firebase listener...')
     last_listener_update = round(time())
     if event.data:
-        module_logger.debug('open garage door')
-        # pin = 12
-        relay = Relay(12, None)
-        relay.on()
+        trigger_time = ref.child("triggerTime").get()
+        if datetime.now().timestamp() - trigger_time < 60:
+            module_logger.debug('open garage door')
+            # pin = 12
+            relay = Relay(12, None)
+            relay.on()
+        else:
+            module_logger.debug('garage door triggered more than 1 min ago', trigger_time)
         db_trigger.set(False)
 
 
