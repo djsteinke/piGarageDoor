@@ -54,7 +54,7 @@ def internet_on():
 
 
 def trigger():
-    module_logger.debug('trigger...')
+    ref.child("triggerTime").set(datetime.now().timestamp())
     db_trigger.set(True)
 
 
