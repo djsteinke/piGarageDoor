@@ -53,9 +53,15 @@ def internet_on():
         sleep(15)
 
 
+triggered = False
+
+
 def trigger():
-    ref.child("triggerTime").set(datetime.now().timestamp())
-    db_trigger.set(True)
+    global triggered
+    if not triggered:
+        triggered = True
+        ref.child("triggerTime").set(datetime.now().timestamp())
+        db_trigger.set(True)
 
 
 def set_state(range_mm):
@@ -71,7 +77,7 @@ def set_state(range_mm):
 
 
 def listener(event):
-    global timer, last_listener_update
+    global timer, last_listener_update, triggered
     module_logger.debug('firebase listener...')
     last_listener_update = round(time())
     if event.data:
@@ -85,6 +91,7 @@ def listener(event):
         else:
             module_logger.info('garage door triggered more than 1 min ago', trigger_time, now)
         db_trigger.set(False)
+        triggered = False
 
 
 def send(message):
