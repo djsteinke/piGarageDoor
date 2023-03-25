@@ -84,12 +84,12 @@ def listener(event):
         trigger_time = ref.child("triggerTime").get()
         now = datetime.now().timestamp()
         if now - trigger_time < 60:
-            module_logger.info('open garage door', trigger_time, now)
+            module_logger.info(f'open garage door : triggered({trigger_time}) : current({now})')
             # pin = 12
             relay = Relay(12, None)
             relay.on()
         else:
-            module_logger.info('garage door triggered more than 1 min ago', trigger_time, now)
+            module_logger.info(f'garage door triggered more than 1 min ago : triggered({trigger_time}) : current({now})')
         db_trigger.set(False)
         triggered = False
 
