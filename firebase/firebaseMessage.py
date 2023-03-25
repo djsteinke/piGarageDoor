@@ -73,6 +73,7 @@ def set_state(range_mm):
         state_new = "full"
     if state_new != state:
         db_state.set(state_new)
+        module_logger.info(f'garage door is {state_new.upper()}')
     state = state_new
 
 

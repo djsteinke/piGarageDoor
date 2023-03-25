@@ -76,7 +76,7 @@ class TOF(object):
             self._timer = None
         if self._restart_timer is not None:
             self._restart_timer = None
-        stdout, stderr = subprocess.Popen(['/home/pi/projects/piGarageDoor/./mgr', 'r'],
+        stdout, stderr = subprocess.Popen(['/home/pi/projects/piGarageDoor/./mgr', 'stop'],
                                           stdout=subprocess.PIPE,
                                           stderr=subprocess.PIPE)
         module_logger.debug("stdout: " + stdout.decode())
