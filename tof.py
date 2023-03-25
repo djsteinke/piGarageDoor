@@ -52,7 +52,7 @@ class TOF(object):
             return "stopped"
 
     def start(self):
-        while self._running:
+        while not self._running:
             module_logger.debug("start()")
             try:
                 self._sensor = adafruit_vl53l0x.VL53L0X(i2c, 0x29)
