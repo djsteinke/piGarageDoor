@@ -83,7 +83,7 @@ def listener(event):
     last_listener_update = round(time())
     if event.data:
         trigger_time = ref.child("triggerTime").get()
-        now = datetime.now().timestamp()
+        now = round(datetime.now().timestamp(), 0)
         if now - trigger_time < 60:
             module_logger.info(f'open garage door : triggered({trigger_time}) : current({now})')
             # pin = 12
